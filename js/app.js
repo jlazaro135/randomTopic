@@ -208,10 +208,26 @@ function getRandomInt(max) {
 }
 
 let appearedTopics = []
+
 btn.addEventListener('click', function(){
     findTopic(appearedTopics)
-    setTimeout(() => findTopic(appearedTopics), 750)
-    setTimeout(() => findTopic(appearedTopics), 1500)  
+    findTopic(appearedTopics)
+    findTopic(appearedTopics)
+    let alerts = alertsWrapper.querySelectorAll('.alert')
+    let timeOut = 0
+    alerts.forEach((alert, i) =>{
+        switch(i){
+            case 0: setTimeout(() => alert.classList.add('fade-in'), 0)
+                break;
+            case 1: setTimeout(() => alert.classList.add('fade-in'), 500)
+                break;
+            case 2: setTimeout(() => alert.classList.add('fade-in'), 1000)
+                break;
+        }
+    })
+    if(window.innerWidth < 992){
+        window.scrollTo(0, document.body.scrollHeight)
+    }
 })
 
 function appendTopic(topic){
@@ -228,7 +244,6 @@ function findTopic(arr){
     let randomNum = getRandomInt(70)
     arr.forEach(item => {
         if(+item === randomNum) {
-            console.log('hola')
             randomNum =  Math.ceil(Math.random() * randomNum)
         } 
     })
@@ -237,8 +252,7 @@ function findTopic(arr){
         let topicSub = topic.trim().substring(0, topic.indexOf("."))
         if(topicSub === randomNumFormatted){
             appendTopic(topic)
-            arr.push(+randomNumFormatted)
+            arr = [...arr, +randomNumFormatted]
         }
     });
-    console.log(arr)
 }
