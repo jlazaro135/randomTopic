@@ -226,7 +226,7 @@ btn.addEventListener('click', function(){
         }
     })
     if(window.innerWidth < 992){
-        window.scrollTo(0, document.body.scrollHeight)
+        window.scrollTo(0, alertsWrapper.offsetTop)
     }
 })
 
