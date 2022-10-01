@@ -1,8 +1,9 @@
 let btn = document.getElementById('btn-random')
 const alertsWrapper = document.querySelector('.app-output')
+const selectWrapper = document.querySelector('.grid')
 
 
-const TOPICS = `
+let TOPICS = `
 Tema 1. La encuesta: posibilidades y limitaciones como técnica de recogida de datos. Campos de
 aplicación. Construcción del cuestionario. Fiabilidad y validez del cuestionario.
 Tema 2. La actitud: definición y el cambio de actitudes. Las escalas de medición de la actitud. Aplicación
@@ -201,58 +202,140 @@ Tema 70. Inmigración y emigración: análisis de la situación y repercusiones 
 para la inmigración en Andalucía. Cooperación al desarrollo y voluntariado social en este ámbito.`
 
 
-TOPICARR = TOPICS.split("Tema")
-
-function getRandomInt(max) {
-    return Math.ceil(Math.random() * max);
-}
-
+let TOPICARR = TOPICS.split("Tema")
+let arrRemovedTopics = [];
+let newTopicArr = []
 let appearedTopics = []
 
-btn.addEventListener('click', function(){
-    findTopic(appearedTopics)
-    findTopic(appearedTopics)
-    findTopic(appearedTopics)
-    let alerts = alertsWrapper.querySelectorAll('.alert')
-    let timeOut = 0
-    alerts.forEach((alert, i) =>{
-        switch(i){
-            case 0: setTimeout(() => alert.classList.add('fade-in'), 0)
-                break;
-            case 1: setTimeout(() => alert.classList.add('fade-in'), 500)
-                break;
-            case 2: setTimeout(() => alert.classList.add('fade-in'), 1000)
-                break;
+document.addEventListener('DOMContentLoaded', function(){
+    printAllTopics()
+    setDeletedTopicArr()
+    toggleCheckboxes()
+    getTopics()   
+})
+
+function toggleCheckboxes() {
+    let checkAllBtn = document.querySelector('.js-check-all')
+    let checkboxes = document.querySelectorAll('.js-check')
+    checkAllBtn.addEventListener('click', function () {
+        if (arrRemovedTopics.length > 0) {
+            checkAllBtn.textContent = 'Seleccionar todos'
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false
+                arrRemovedTopics = []
+            })
+            arrRemovedTopics = []
+            return
+        }
+        checkAllBtn.textContent = 'Deseleccionar todos'
+        checkboxes.forEach(checkbox => {
+            let topicSelected = TOPICARR[checkbox.id]
+            checkbox.checked = true
+            arrRemovedTopics = [...arrRemovedTopics, topicSelected]
+        })
+    })
+}
+
+function setDeletedTopicArr() {
+    let checkboxes = document.querySelectorAll('.js-check')
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function () {
+            let topicSelected = TOPICARR[checkbox.id]
+
+            if (arrRemovedTopics.includes(topicSelected)) {
+                let index = arrRemovedTopics.indexOf(topicSelected)
+                arrRemovedTopics.splice(index, 1)
+            }
+
+            if (checkbox.checked) {
+                if (arrRemovedTopics.includes(topicSelected))
+                    return
+                arrRemovedTopics = [...arrRemovedTopics, topicSelected]
+            }
+        })
+    })
+}
+
+
+function getRandomArr(arr) {
+    let random = Math.ceil(Math.max(Math.random() * arr.length-1, 1))
+    if(appearedTopics.includes(random)){
+        return getRandomArr(arr)
+    }
+    appearedTopics = [...appearedTopics, random]
+    let randomTopic = arr[random]
+    randomTopic = randomTopic.trim().substring(0, randomTopic.indexOf("."))
+    return randomTopic
+}
+
+function getTopics() {
+    btn.addEventListener('click', function () {
+        if (arrRemovedTopics.length > 67 && arrRemovedTopics.length <= 70) {
+            alert('Selecciona al menos 3 temas')
+            return
+        }
+        TOPICARR.forEach(topic => {
+            if (!arrRemovedTopics.includes(topic)) {
+                newTopicArr = [...newTopicArr, topic]
+            }
+        })
+
+        findTopic()
+        findTopic()
+        findTopic()
+        let alerts = alertsWrapper.querySelectorAll('.alert')
+        alerts.forEach((alert, i) => {
+            switch (i) {
+                case 0: setTimeout(() => alert.classList.add('fade-in'), 0)
+                    break
+                case 1: setTimeout(() => alert.classList.add('fade-in'), 500)
+                    break
+                case 2: setTimeout(() => alert.classList.add('fade-in'), 1000)
+                    break
+            }
+        })
+        if (window.innerWidth < 992) {
+            window.scrollTo(0, alertsWrapper.offsetTop)
         }
     })
-    if(window.innerWidth < 992){
-        window.scrollTo(0, alertsWrapper.offsetTop)
-    }
-})
+}
 
 function appendTopic(topic){
     const fragment = document.createDocumentFragment();
     const templateTopics = document.querySelector('#topicsTemplate')
     let alert = templateTopics.content.querySelector('.alert')
-    alert.textContent = topic
+    alert.textContent = 'TEMA ' + topic
     const clone = templateTopics.cloneNode(true)
     fragment.append(clone.content)
     alertsWrapper.append(fragment)
 }
-function findTopic(arr){
+function findTopic(){
     if(alertsWrapper.childElementCount === 4)return
-    let randomNum = getRandomInt(70)
-    arr.forEach(item => {
-        if(+item === randomNum) {
-            randomNum =  Math.ceil(Math.random() * randomNum)
-        } 
-    })
-    randomNumFormatted = `${randomNum}.`
-    TOPICARR.forEach(topic => {
+    let radomFormatted = getRandomArr(newTopicArr)
+    newTopicArr.forEach(topic => {
         let topicSub = topic.trim().substring(0, topic.indexOf("."))
-        if(topicSub === randomNumFormatted){
+        if(topicSub === radomFormatted){
             appendTopic(topic)
-            arr = [...arr, +randomNumFormatted]
         }
     });
+}
+
+function appendTopicCheckbox(topic, index){
+    const fragment = document.createDocumentFragment();
+    const checkboxTemplate = document.querySelector('#checkboxTemplate')
+    let label = checkboxTemplate.content.querySelector('.form-check-label')
+    let input = checkboxTemplate.content.querySelector('.form-check-input')
+    label.textContent = 'TEMA ' + topic.trim().substring(0, topic.indexOf(".")-1)
+    label.setAttribute('for', index)
+    input.id = index
+    const clone = checkboxTemplate.cloneNode(true)
+    fragment.append(clone.content)
+    selectWrapper.append(fragment)
+}
+
+function printAllTopics(){
+    TOPICARR.forEach((topic, index) => {
+        if(index === 0)return
+        appendTopicCheckbox(topic, index)
+    })
 }

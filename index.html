@@ -28,6 +28,26 @@
                         <p class="w-100 m-0 text-center text-lg-start fs-3">Segundo examen</h1>
                     </div>
                 </div>
+                <div class="app-select col-12 text-center my-4 p-4">
+                    <p class="fw-bold mb-0">¿Quieres excluir algún tema del sorteo? </p> <p>Haz click en el siguiente botón y selecciona los temas que deseas excluir</p>
+                    <button class="btn btn-sm btn-danger fs-6" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTopics" aria-expanded="false" aria-controls="collapseTopics">
+                        Excluir temas
+                    </button>
+                      
+                    <div class="collapse" id="collapseTopics">
+                        <div class="grid">
+                            <template id="checkboxTemplate">
+                                <div class="form-check">
+                                    <input class="form-check-input js-check" type="checkbox" value="" id="checkboxTemplate">
+                                    <label class="form-check-label" for="checkboxTemplate">
+                                      Default checkbox
+                                    </label>
+                                  </div>
+                            </template>
+                        </div>
+                        <button class="btn btn-sm btn-info js-check-all fs-6 mt-2 text-white">Seleccionar todos</button>
+                    </div>
+                </div>
                 <div class="app-instrusctions col-12 text-center">
                     <p><strong class="">INSTRUCCIONES:</strong><br> Haz click sobre el botón para obtener tres temas al azar. Si quieres volver a empezar pincha en el botón azul</p>
                 </div>
